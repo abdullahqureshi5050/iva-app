@@ -38,7 +38,7 @@ export const BookmarkScreen = () => {
       />
 
      <Text>Watchlist Screen</Text>
-      <DotedLineFunc/>
+      {/* <DotedLineFunc/> */}
     </View>
   );
 };

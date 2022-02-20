@@ -1,6 +1,6 @@
 //import { HorizontalTimeline } from 'react-native-horizontal-timeline';
 import { Alert, Dimensions, StyleSheet, Text, View } from "react-native";
-import React, { useState, useEffect, useCallback, useReducer } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { colors } from "../components/Color";
 import { TimePeriodCalculator } from "../components/TimePeriodCalculator";
@@ -21,16 +21,19 @@ export const TimelineScreen = () => {
   const [date1State, setDate2State] = useState("0");
   const [playButtonState, setPlayButtonState] = useState('play-circle');
   const [fastClockState, setfastClockState] = useState('speedometer');
-  
+  const [offsetState,setOffsetState] = useState(0);
+
+  const scrollViewRef = useRef();
+  let labelShown = false; 
   let headerTime = '0';
   let date1: any = '';
 useEffect(() => {
   //first
   headerTime = "2021-07-05 00:00";
-  formatedDateCard = moment(startTimeState).format("d MMM YY");
+  //formatedDateCard = moment(startTimeState).format("d MMM YY");
   //date1 = moment(startTimeState).add(60 , "days").toDate();
   //moment(startTimeState).format("d MMM YY");
-  setFormatedDateCardState(formatedDateCard)
+  //setFormatedDateCardState(formatedDateCard)
   //setStartTimeState("2021-07-05 00:00")
   //setEndTimeState("2022-07-29 00:00")
 
@@ -42,6 +45,13 @@ useEffect(() => {
 
   let formatedDate: React.SetStateAction<string>;
   let formatedDateCard: React.SetStateAction<string>;
+
+  const slowlyScrollDown = () => {
+    //offset + 80
+    const y = offsetState  + 26;
+    scrollViewRef.current.scrollTo({x: 0, y, animated: true});
+    setOffsetState(y);
+}
   // useEffect(() => {
   //   forceUpdate(formatedDate)
   //   //useCallback((props) =>  setHeaderTimeState(props), []);
@@ -68,13 +78,12 @@ useEffect(() => {
         formatedDate = moment(newDateObj).format("h:mm A - ddd d MMM YY");
        // formatedDateCard = moment(newDateObj).format("d MMM YY");
          //console.log(scrollIndex);
-          setHeaderTimeState(formatedDate);
           headerTime = formatedDate;
           
           setTimeout(()=>{
             setHeaderTimeState(formatedDate)
-            setFormatedDateCardState(formatedDateCard)
-          }, 500);
+            //setFormatedDateCardState(formatedDateCard)
+          }, 1500);
 
   
        
@@ -99,14 +108,100 @@ useEffect(() => {
                 if (index + 1 == slots) {
                   return (
                     <View key={index} style={styles.scrollViewContainer}>
-                      {/* 00 */}
+                      
                       <View style={{ ...styles.point, width: 45 * 1.5 }}></View>
                     </View>
                   );
                 } else
                   return (
                     <View key={index} style={styles.scrollViewContainer}>
+
+
+                     {(index==36-1) ? <>
+                     <View
+                       style={{
+                        alignSelf: "flex-end",
+                        position: "absolute",
+                        transform: [
+                          { translateY: -16 },
+                          { translateX: 110 }
+                        ],
+                      }}
+                    >
+                      <Label
+                        textStyle={{
+                          alignItems: 'center',
+                          //textAlign: 'center',
+                          fontSize: 8,
+                          alignSelf: 'baseline',
+                        }}
+                        labelContainerStyle={{
+                          maxWidth: Dimensions.get("window").width * .33,
+                          width: 130 ,//Dimensions.get("window").width * .33,
+                          elevation: 5,
+                          marginBottom: 0,
+                          marginHorizontal: 0,
+                          marginVertical: 0,
+                          alignSelf: 'baseline'
+                        }}
+                          numberOfLines={2}
+                          label={'09/08/2021 - "Leak turning into a burst in DMA3"'}
+                          color={colors.BLACK}
+                          backgroundColor={colors.WHITE}
+                        />
+                      </View>
+                      
+                      </> :<></>}
+
+
+
+                       {/* Monday  */}
                       <View
+                        style={{
+                          alignSelf: "flex-start",
+                          position: "absolute",
+                          transform: [{ translateY: -16 }, { translateX: -110 }],
+                        }}
+                      >
+                        <Label
+                          textStyle={{
+                            alignItems: 'center',
+                            //textAlign: 'center',
+                            fontSize: 8,
+                            alignSelf: 'baseline',
+                          }}
+                          labelContainerStyle={{
+                            maxWidth: Dimensions.get("window").width * .33,
+                            width: 80 ,//Dimensions.get("window").width * .33,
+                            elevation: 5,
+                            marginBottom: 0,
+                            marginHorizontal: 0,
+                            marginVertical: 0,
+                            alignSelf: 'baseline'
+                          }}
+                          numberOfLines={3}
+                          label={moment(startTimeState)
+                            .add(index , "days")
+                            .toDate().toString()}
+                          color={colors.BLACK}
+                          backgroundColor={colors.WHITE}
+                        />
+                      </View>
+
+                      <View style={{ ...styles.point, width: 45 * 1.5 }}>
+                          {/* alert point on alert message point index */}
+                      {(index==36-1) ? 
+                        <View
+                          style={{
+                            ...styles.pointAlert,
+                            transform: [{ translateY: -4.5 }],
+                          }}
+                        />
+                        :<View></View>}
+
+                      </View>
+
+                      {/* <View
                         style={{
                           alignSelf: "flex-end",
                           position: "absolute",
@@ -117,7 +212,7 @@ useEffect(() => {
                           textStyle={{
                             alignItems: 'center',
                             textAlign: 'center',
-                            //backgroundColor: 'red',
+                            
                             alignSelf: 'center'
                           }}
                           labelContainerStyle={{
@@ -130,19 +225,11 @@ useEffect(() => {
                             alignSelf: 'center'
                           }}
                           numberOfLines={1}
-                          label={formatedDateCardState}
+                          label={'09/08/21'}
                           color={colors.BLACK}
                           backgroundColor={colors.WHITE}
                         />
-                      </View>
-                      <View style={{ ...styles.point, width: 45 * 1.5 }}>
-                        <View
-                          style={{
-                            ...styles.pointAlert,
-                            transform: [{ translateY: -4.5 }],
-                          }}
-                        />
-                      </View>
+                      </View> */}
                       <View style={{ ...styles.square }} />
                     </View>
                   );
@@ -156,10 +243,163 @@ useEffect(() => {
               } else {
                 return (
                   <View key={index} style={styles.scrollViewContainer}>
-                    {/* 00 */}
-                    <View style={{ ...styles.point }} >
-                   
-                    </View>
+
+                    
+                      {/* 05/09/2021 */}
+
+                      {(index==62) ? <>
+                        <View
+                          style={{
+                            ...styles.pointAlert,
+                            zIndex: 999,
+                            position: 'absolute',
+                            transform: [{ translateY: -12 }, { translateX: -10 }],
+                          }}
+                        />
+                     <View
+                        style={{
+                          alignSelf: "flex-end",
+                          position: "absolute",
+                          transform: [
+                            { translateY: -16 },
+                            { translateX: 110 }
+                          ],
+                        }}
+                      >
+                        <Label
+                          textStyle={{
+                            alignItems: 'center',
+                            //textAlign: 'center',
+                            fontSize: 8,
+                           
+                            alignSelf: 'baseline',
+                          }}
+                          labelContainerStyle={{
+                            maxWidth: Dimensions.get("window").width * .33,
+                            width: 130 ,//Dimensions.get("window").width * .33,
+                            elevation: 5,
+                            marginBottom: 0,
+                            marginHorizontal: 0,
+                            marginVertical: 0,
+                            alignSelf: 'baseline'
+                          }}
+                          numberOfLines={2}
+                          label={'05/09/2021 - "Valve (V11) closure operation in DMA1"'}
+                          color={colors.BLACK}
+                          backgroundColor={colors.WHITE}
+                        />
+                      </View>
+                      
+                      </> :<></>}
+
+
+                       {/* alert point on alert message point index */}
+                       {/* {(index==62) ? 
+                        <View
+                          style={{
+                            ...styles.pointAlert,
+                            transform: [{ translateY: -4.5 }],
+                          }}
+                        />
+                        :<View></View>} */}
+
+                      
+
+{/* 09/09/2021 Thursday */}
+               { (index==66)?
+                     <>
+                     <View
+                          style={{
+                            ...styles.pointAlert,
+                            zIndex: 999,
+                            position: 'absolute',
+                            transform: [{ translateY: -12 }, { translateX: -10 }],
+                          }}
+                        />
+                     <View
+                        style={{
+                          alignSelf: "flex-end",
+                          position: "absolute",
+                          transform: [
+                            { translateY: -16 },
+                            { translateX: 110 }
+                          ],
+                        }}
+                      >
+                        <Label
+                          textStyle={{
+                            alignItems: 'center',
+                            //textAlign: 'center',
+                            fontSize: 8,
+                           
+                            alignSelf: 'baseline',
+                          }}
+                          labelContainerStyle={{
+                            maxWidth: Dimensions.get("window").width * .33,
+                            width: 130 ,//Dimensions.get("window").width * .33,
+                            elevation: 5,
+                            marginBottom: 0,
+                            marginHorizontal: 0,
+                            marginVertical: 0,
+                            alignSelf: 'baseline'
+                          }}
+                          numberOfLines={2}
+                          label={'09/09/2021 - "Leak turning into a burst in DMA3"'}
+                          color={colors.BLACK}
+                          backgroundColor={colors.WHITE}
+                        />
+                      </View>
+                      </> : <></>}
+                           {/* alert point on alert message point index */}
+                     
+
+                      {/* 21/09/21 Tuesday */}
+                      { (index==78)?
+                     <>
+                     <View
+                          style={{
+                            ...styles.pointAlert,
+                            zIndex: 999,
+                            position: 'absolute',
+                            transform: [{ translateY: -12 }, { translateX: -10 }],
+                          }}
+                        />
+                        <View
+                     style={{
+                      alignSelf: "flex-end",
+                      position: "absolute",
+                      transform: [
+                        { translateY: -16 },
+                        { translateX: 110 }
+                      ],
+                    }}
+                  >
+                    <Label
+                      textStyle={{
+                        alignItems: 'center',
+                        //textAlign: 'center',
+                        fontSize: 8,
+                       
+                        alignSelf: 'baseline',
+                      }}
+                      labelContainerStyle={{
+                        maxWidth: Dimensions.get("window").width * .33,
+                        width: 130 ,//Dimensions.get("window").width * .33,
+                        elevation: 5,
+                        marginBottom: 0,
+                        marginHorizontal: 0,
+                        marginVertical: 0,
+                        alignSelf: 'baseline'
+                      }}
+                          numberOfLines={2}
+                          label={'21/09/2021 - "Valve (V11) closure operation in DMA1"'}
+                          color={colors.BLACK}
+                          backgroundColor={colors.WHITE} />
+                      </View></> : <></>}
+
+              <View style={{ ...styles.point }}></View>
+               {/* alert point on alert message point index */}
+               
                     {/* 1 */}
                     <View style={{ ...styles.square }} />
                   </View>
@@ -211,7 +451,9 @@ useEffect(() => {
           {/* <FontAwesome5 name="play" size={24} color={colors.ARGON_PURPLE} /> */}
           {/* <Text>{currentTimeState}</Text> */}
         </View>
+        
         <ScrollView
+          ref={scrollViewRef}
           onMomentumScrollEnd={
             //()=>console.log(Dimensions.get('window').height)
             onScrollHandler
@@ -383,8 +625,8 @@ useEffect(() => {
       }}>
                     <MaterialCommunityIcons 
               name={fastClockState}
-              size={40} 
-              color="black" 
+              size={60} 
+              color={colors.ARGON_PURPLE} 
               onPress={
                 ()=>{
                   fastClockState=='speedometer' ? setfastClockState('speedometer-slow'):setfastClockState('speedometer')} 
@@ -393,9 +635,11 @@ useEffect(() => {
           <MaterialCommunityIcons 
             onPress={
               ()=>{
-                playButtonState=='play-circle' ? setPlayButtonState('stop-circle'):setPlayButtonState('play-circle')} 
+                playButtonState=='play-circle' ? setPlayButtonState('stop-circle'):setPlayButtonState('play-circle');
+                slowlyScrollDown();
+              } 
             }
-            name={`${playButtonState}`} size={40} color="red" />
+            name={`${playButtonState}`} size={60} color={colors.ARGON_PURPLE} />
 
         </View>
     </View>
@@ -470,6 +714,8 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     justifyContent: "center",
     alignItems: "center",
+    paddingRight: 20,
+     //backgroundColor: "yellow",
   },
 
   timeLineContainer: {
