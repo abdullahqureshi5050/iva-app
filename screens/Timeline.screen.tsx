@@ -12,43 +12,88 @@ import { onScrollHandlerFunc } from "../components/ComponentLayoutandScrollHandl
 import { FONTSIZE } from "../static/FontSize";
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { DotedLineFunc } from "../components/DotedLineFunc";
+import { ActivityIndicatorSpinner } from "../components/ActivityIndicator";
+import axios from "axios";
+import qs from 'qs';
 
 export const TimelineScreen = () => {
   const [startTimeState, setStartTimeState] = useState( "2021-07-05 00:00");
-  const [endTimeState, setEndTimeState] = useState("2022-07-29 00:00");
+  const [endTimeState, setEndTimeState] = useState("2021-09-29 00:00");
   const [headerTimeState, setHeaderTimeState] = useState("0");
   const [formatedDateCardState, setFormatedDateCardState] = useState("");
   const [date1State, setDate2State] = useState("0");
   const [playButtonState, setPlayButtonState] = useState('play-circle');
   const [fastClockState, setfastClockState] = useState('speedometer');
   const [offsetState,setOffsetState] = useState(0);
+  const speed = 0;
+  //const [points, setPoints] = useState(0);
 
+  
+    // Your app
+  // </Context.Provider>
   const scrollViewRef = useRef();
+  let scrollIndex = 0;
   let labelShown = false; 
   let headerTime = '0';
   let date1: any = '';
+  const playButtonUseRef = useRef(null);
+
+  var postData = {
+    "replay_request": {
+    "userID": "1234567890",
+    "command": "START",
+    "val": "19 Jan 2022 16:05:50 GMT"
+    }
+    }
+
 useEffect(() => {
   //first
   headerTime = "2021-07-05 00:00";
+  if(fastClockState==="speedometer"){
+    //speed = "60x"
+    console.log('fast mode enabled')
+
+  }
+  else{
+    console.log('slow mode')
+  }
+  // const options = {
+  //   method: 'POST',
+  //   headers: {
+  //     'Ocp-Apim-Subscription-Key': '8e522f5dd33b4892b2a8e149d504b153',
+  //     'Ocp-Apim-Trace': true,
+  //     'Content-Type': 'application/json'
+  //   },
+  //   data: qs.stringify({​​​​​​​​​​​​​​
+  //     "replay_request": {​​​​​​​​​​​​​​​​​​​​​​​​​
+  //         "userID": "1234567890",
+  //         "command": "START",
+  //         "val": "21 Jul 2021 16:00:00 UTC"
+  //     }​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
+  // }​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​),
+  // url: 'https://iva-api-management.azure-api.net/iva/v1/datareplay'
+  // };
+
+  
+  
   //formatedDateCard = moment(startTimeState).format("d MMM YY");
   //date1 = moment(startTimeState).add(60 , "days").toDate();
   //moment(startTimeState).format("d MMM YY");
   //setFormatedDateCardState(formatedDateCard)
   //setStartTimeState("2021-07-05 00:00")
   //setEndTimeState("2022-07-29 00:00")
-
-  
+ 
   return () => {
    // second
   }
-}, [headerTimeState, startTimeState])
+}, [startTimeState, fastClockState])
 
   let formatedDate: React.SetStateAction<string>;
   let formatedDateCard: React.SetStateAction<string>;
 
   const slowlyScrollDown = () => {
     //offset + 80
-    const y = offsetState  + 26;
+    const y = scrollIndex  + 26;
     scrollViewRef.current.scrollTo({x: 0, y, animated: true});
     setOffsetState(y);
 }
@@ -65,25 +110,32 @@ useEffect(() => {
   //const API_Fake_Data = [{hea}]
 
   const onScrollHandler = (e: any) => {
+  
     const res = onScrollHandlerFunc(e);
 
     if (!res.error && (res.contentOffset_Y || res.contentOffset_Y == 0)) {
      
       // if content scrolling on Y-axis is >= component height from top of the screen
-      const scrollIndex = res.contentOffset_Y / 26;
-      var newDateObj = moment(startTimeState)
+      scrollIndex = res.contentOffset_Y / 26;
+      //console.log("ss",scrollIndex);
+
+      let newDateObj = moment(startTimeState)
         .add(scrollIndex , "days")
         .toDate();
         
-        formatedDate = moment(newDateObj).format("h:mm A - ddd d MMM YY");
+       // console.log(newDateObj);
+       // formatedDate = moment(newDateObj).format("h:mm A - ddd dd MMM YY");
+        formatedDate = moment(newDateObj).format(" DD-MM-YYYY - h:mm A");
+        
        // formatedDateCard = moment(newDateObj).format("d MMM YY");
          //console.log(scrollIndex);
           headerTime = formatedDate;
           
           setTimeout(()=>{
+            //setHeaderTimeState(newDateObj.toString())
             setHeaderTimeState(formatedDate)
             //setFormatedDateCardState(formatedDateCard)
-          }, 1500);
+          }, 1000);
 
   
        
@@ -158,7 +210,7 @@ useEffect(() => {
                        {/* Monday  */}
                       <View
                         style={{
-                          alignSelf: "flex-start",
+                          alignSelf: "center",
                           position: "absolute",
                           transform: [{ translateY: -16 }, { translateX: -110 }],
                         }}
@@ -166,9 +218,9 @@ useEffect(() => {
                         <Label
                           textStyle={{
                             alignItems: 'center',
-                            //textAlign: 'center',
+                            textAlign: 'center',
                             fontSize: 8,
-                            alignSelf: 'baseline',
+                            alignSelf: 'center',
                           }}
                           labelContainerStyle={{
                             maxWidth: Dimensions.get("window").width * .33,
@@ -181,8 +233,9 @@ useEffect(() => {
                           }}
                           numberOfLines={3}
                           label={moment(startTimeState)
-                            .add(index , "days")
-                            .toDate().toString()}
+                            .add(index , "days").format('DD ddd YYYY')
+                            //.toDate().toString()
+                          }
                           color={colors.BLACK}
                           backgroundColor={colors.WHITE}
                         />
@@ -454,8 +507,11 @@ useEffect(() => {
         
         <ScrollView
           ref={scrollViewRef}
+          snap
+          onScrollAnimationEnd={()=>{
+
+          }}
           onMomentumScrollEnd={
-            //()=>console.log(Dimensions.get('window').height)
             onScrollHandler
           }
           snapToInterval={26}
@@ -634,11 +690,51 @@ useEffect(() => {
             />
           <MaterialCommunityIcons 
             onPress={
-              ()=>{
-                playButtonState=='play-circle' ? setPlayButtonState('stop-circle'):setPlayButtonState('play-circle');
-                slowlyScrollDown();
-              } 
-            }
+              ()=>{   
+                   playButtonState=='play-circle' ? setPlayButtonState('stop-circle'):setPlayButtonState('play-circle');
+                   console.log(scrollIndex);
+
+                   let currnetPlayIndex = moment(startTimeState)
+                    .add(scrollIndex , "days").format('DD MMM YYYY hh:mm:ss')
+                    
+                  var fD = currnetPlayIndex + " GMT"; 
+
+                  let a = moment(startTimeState)
+                            .add(scrollIndex , "days").toDate()
+
+                  //console.log(a);
+
+                  //console.log(typeof(fD));
+                  console.log(fD);
+                   axios.post('https://iva-api-management.azure-api.net/iva/v1/datareplay',
+                        {
+                          "replay_request": {
+                          "userID": "1234567890",
+                          "command": "START",
+                          "val":  fD//"19 Jan 2022 16:05:50 GMT" //fD //
+                          }
+                          },
+                        {
+                        headers: {
+                          'Ocp-Apim-Subscription-Key': '8e522f5dd33b4892b2a8e149d504b153',
+                          'Ocp-Apim-Trace': true,
+                          'Content-Type': 'application/json'
+                        }
+                        },
+                        )
+                          .then(function (response) {
+                            console.log(response);
+                          })
+                          .catch(function (error) {
+                            console.log(error);
+                          });
+                    
+                  
+                        }}
+               
+                //slowlyScrollDown();
+              
+            
             name={`${playButtonState}`} size={60} color={colors.ARGON_PURPLE} />
 
         </View>

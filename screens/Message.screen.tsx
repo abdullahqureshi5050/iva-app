@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, createContext } from "react";
 import {
   StyleSheet,
   View,
@@ -27,6 +27,9 @@ import { ButtonC } from "../components/Button";
 import { Label } from "../components/Label";
 import RBSheet from "react-native-raw-bottom-sheet";
 
+//const ThemeContext = createContext('');
+export let isTouchedContext = createContext(false);
+
 export const MessageScreen = (props: any) => {
   //const [itemSearchFocusedState, setItemSearchFocusedState] = useState(false);
   const refRBSheet: any = useRef();
@@ -35,6 +38,7 @@ export const MessageScreen = (props: any) => {
       style={styles.rootContainer}
       //onPress={Keyboard.dismiss}
       accessible={false}
+      onTouchEnd={()=>{ console.log('detectTouch')}}
     >
       <Header
         //{...props}
@@ -303,7 +307,10 @@ export const MessageScreen = (props: any) => {
             backgroundColor={colors.DARK_GRAY}
           />
         </View>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        
+        <TouchableWithoutFeedback onPress={()=>{
+          Keyboard.dismiss
+          }} accessible={false} >
           <View style={styles.searchContainer}>
             <View
               style={
