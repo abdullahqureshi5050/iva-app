@@ -16,6 +16,9 @@ import { ActivityIndicatorSpinner } from "../components/ActivityIndicator";
 import axios from "axios";
 import qs from 'qs';
 
+//global scope - outside scope
+var scrollIndex = 0; 
+
 export const TimelineScreen = () => {
   const [startTimeState, setStartTimeState] = useState( "2021-07-05 00:00");
   const [endTimeState, setEndTimeState] = useState("2021-09-29 00:00");
@@ -23,7 +26,7 @@ export const TimelineScreen = () => {
   const [formatedDateCardState, setFormatedDateCardState] = useState("");
   const [date1State, setDate2State] = useState("0");
   const [playButtonState, setPlayButtonState] = useState('play-circle');
-  const [fastClockState, setfastClockState] = useState('speedometer');
+  const [fastClockState, setfastClockState] = useState('rabbit');
   const [offsetState,setOffsetState] = useState(0);
   const speed = 0;
   //const [points, setPoints] = useState(0);
@@ -32,7 +35,7 @@ export const TimelineScreen = () => {
     // Your app
   // </Context.Provider>
   const scrollViewRef = useRef();
-  let scrollIndex = 0;
+  
   let labelShown = false; 
   let headerTime = '0';
   let date1: any = '';
@@ -49,7 +52,7 @@ export const TimelineScreen = () => {
 useEffect(() => {
   //first
   headerTime = "2021-07-05 00:00";
-  if(fastClockState==="speedometer"){
+  if(fastClockState==="rabbit"){
     //speed = "60x"
     console.log('fast mode enabled')
 
@@ -117,7 +120,7 @@ useEffect(() => {
      
       // if content scrolling on Y-axis is >= component height from top of the screen
       scrollIndex = res.contentOffset_Y / 26;
-      //console.log("ss",scrollIndex);
+      console.log("ss",scrollIndex);
 
       let newDateObj = moment(startTimeState)
         .add(scrollIndex , "days")
@@ -233,7 +236,7 @@ useEffect(() => {
                           }}
                           numberOfLines={3}
                           label={moment(startTimeState)
-                            .add(index , "days").format('DD ddd YYYY')
+                            .add(index , "days").format('DD MMM YYYY')
                             //.toDate().toString()
                           }
                           color={colors.BLACK}
@@ -506,6 +509,7 @@ useEffect(() => {
         </View>
         
         <ScrollView
+          scrollEventThrottle={1}
           ref={scrollViewRef}
           snap
           onScrollAnimationEnd={()=>{
@@ -681,11 +685,11 @@ useEffect(() => {
       }}>
                     <MaterialCommunityIcons 
               name={fastClockState}
-              size={60} 
+              size={40} 
               color={colors.ARGON_PURPLE} 
               onPress={
                 ()=>{
-                  fastClockState=='speedometer' ? setfastClockState('speedometer-slow'):setfastClockState('speedometer')} 
+                  fastClockState=='rabbit' ? setfastClockState('turtle'):setfastClockState('rabbit')} 
               }
             />
           <MaterialCommunityIcons 
@@ -697,21 +701,22 @@ useEffect(() => {
                    let currnetPlayIndex = moment(startTimeState)
                     .add(scrollIndex , "days").format('DD MMM YYYY hh:mm:ss')
                     
-                  var fD = currnetPlayIndex + " GMT"; 
+                  var dateAtIndex = currnetPlayIndex + " GMT"; 
 
                   let a = moment(startTimeState)
                             .add(scrollIndex , "days").toDate()
+                  console.log(a)          
 
                   //console.log(a);
 
                   //console.log(typeof(fD));
-                  console.log(fD);
+                  console.log(dateAtIndex);
                    axios.post('https://iva-api-management.azure-api.net/iva/v1/datareplay',
                         {
                           "replay_request": {
                           "userID": "1234567890",
                           "command": "START",
-                          "val":  fD//"19 Jan 2022 16:05:50 GMT" //fD //
+                          "val":  dateAtIndex//"19 Jan 2022 16:05:50 GMT" //fD //
                           }
                           },
                         {
@@ -735,7 +740,7 @@ useEffect(() => {
                 //slowlyScrollDown();
               
             
-            name={`${playButtonState}`} size={60} color={colors.ARGON_PURPLE} />
+            name={`${playButtonState}`} size={40} color={colors.ARGON_PURPLE} />
 
         </View>
     </View>
