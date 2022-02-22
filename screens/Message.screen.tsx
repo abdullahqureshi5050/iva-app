@@ -26,19 +26,53 @@ import { TextInputC } from "../components/TextInput";
 import { ButtonC } from "../components/Button";
 import { Label } from "../components/Label";
 import RBSheet from "react-native-raw-bottom-sheet";
+import {
+  fastSpeedMode,
+  autoSlow,
+  autoSlowTime,
+  setAutoSlow,
+  setFastSpeedMode,
+  setAutoSlowTime,
+  playmode,
+} from "./Timeline.screen";
+import moment from "moment";
 
 //const ThemeContext = createContext('');
 export let isTouchedContext = createContext(false);
 
 export const MessageScreen = (props: any) => {
   //const [itemSearchFocusedState, setItemSearchFocusedState] = useState(false);
+
+  const screenIntractionHandler = () => {
+    if (playmode) {
+      console.log("detectTouch");
+      if(fastSpeedMode){
+        //console.log("autoSlow", autoSlow);
+        setAutoSlow(true);
+        //console.log("autoSlow", autoSlow);
+        var currentTime:any = moment();
+      setAutoSlowTime(currentTime) //time.now
+        setFastSpeedMode(false);
+        console.log('fastspeedMode in Chat',fastSpeedMode);
+      }
+      else{
+       
+        if(autoSlow){
+          var currentTime:any = moment();
+          setAutoSlowTime(currentTime); 
+        }
+      }
+    }else
+    console.log('not playing')
+  };
+
   const refRBSheet: any = useRef();
   return (
     <View
       style={styles.rootContainer}
       //onPress={Keyboard.dismiss}
       accessible={false}
-      onTouchEnd={()=>{ console.log('detectTouch')}}
+      onTouchEnd={screenIntractionHandler}
     >
       <Header
         //{...props}
@@ -91,9 +125,7 @@ export const MessageScreen = (props: any) => {
                   marginHorizontal: 5,
                   marginVertical: 10,
                 }}
-                label={
-                  "Hello! Good morning, How can I help you today?"
-                }
+                label={"Hello! Good morning, How can I help you today?"}
                 color={colors.BLACK}
                 backgroundColor={colors.WHITE}
               />
@@ -307,10 +339,13 @@ export const MessageScreen = (props: any) => {
             backgroundColor={colors.DARK_GRAY}
           />
         </View>
-        
-        <TouchableWithoutFeedback onPress={()=>{
-          Keyboard.dismiss
-          }} accessible={false} >
+
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss;
+          }}
+          accessible={false}
+        >
           <View style={styles.searchContainer}>
             <View
               style={

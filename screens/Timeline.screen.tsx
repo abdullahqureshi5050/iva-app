@@ -20,10 +20,26 @@ import { startapi } from "../api/startapi";
 
 var scrollIndex = 0;
 var playTime: any;
-var playmode = false;
+export var playmode = false;
 var currentTime;
-var fastSpeedMode: boolean = true;
+export var fastSpeedMode: boolean = true;
+export var autoSlow = false;
+export var autoSlowTime: any; 
 var clockSyncInterval: any;
+var fastModeCount = 0;
+var slowModeCount = 0;
+
+export const setAutoSlow = (props: boolean)=>{
+  autoSlow = props;
+}
+
+export const setAutoSlowTime =  (props: any)=>{
+  autoSlowTime = props;
+}
+
+export const setFastSpeedMode = (props: boolean)=>{
+  fastSpeedMode = props;
+}
 
 export const TimelineScreen = () => {
   const [startTimeState, setStartTimeState] = useState("2021-07-05 00:00");
@@ -35,6 +51,7 @@ export const TimelineScreen = () => {
   const [fastClockState, setfastClockState] = useState("rabbit");
   const [offsetState, setOffsetState] = useState(0);
   const speed = 0;
+
   //const [points, setPoints] = useState(0);
 
   // Your app
@@ -46,9 +63,19 @@ export const TimelineScreen = () => {
   let date1: any = "";
   const playButtonUseRef = useRef(null);
 
+  // const STEP = {
+  //   replay_request: {
+  //     userID: "1234567890",
+  //     command: "STEP",
+  //     val: "1h",
+  //   },
+  // };
+
   clockSyncInterval = setInterval(() => {
     if (playmode) {
+      //console.log(playmode);
       if (fastSpeedMode) {
+        slowModeCount = 0;
         var currentTime = moment();
         var diff = currentTime.diff(playTime, "seconds");
 
@@ -67,8 +94,8 @@ export const TimelineScreen = () => {
               {
                 replay_request: {
                   userID: "1234567890",
-                  command: "START",
-                  val: dateAtIndex, //"19 Jan 2022 16:05:50 GMT" //fD //
+                  command: "STEP",
+                  val: "1h",
                 },
               },
               {
@@ -81,14 +108,41 @@ export const TimelineScreen = () => {
               }
             )
             .then(function (response) {
-              console.log(response);
+              if (response) {
+                const data = response.data;
+                // const { date } = response.data;
+                if (data.replay_reply.backend_time) {
+                  // const serverDate = moment(data.replay_reply.backend_time);
+                  // // "DD MMM YYYY hh:mm:ss"
+                  // console.log(serverDate);
+                  console.log('fastModeCount', fastModeCount)
+                  const formatedServerDate = moment(
+                    data.replay_reply.backend_time
+                  ).subtract(5,'hours').format("DD MM YYYY hh:mm");
+                   // console.log(moment(formatedServerDate))
+                  console.log(formatedServerDate);
+                  setHeaderTimeState(formatedServerDate);
+                  //"hardcode to 1h"
+                  console.log(scrollIndex);
+                 // var currentScrollIndex = scrollIndex*26;
+                  var offset = scrollIndex*26 + (24*(fastModeCount+1))/26;
+                  scrollDownToOffset(scrollIndex, offset);
+                  fastModeCount++;
+                }
+              }
+              //
+              // console.log(response);
             })
             .catch(function (error) {
+              //console.log('----------------------------------------server error');
               console.log(error);
             });
           playTime = moment();
         }
-      } else {
+      } 
+      //slow mode case
+      else {
+        fastModeCount = 0;
         var currentTime = moment();
         var diff = currentTime.diff(playTime, "seconds");
         if (diff >= 60) {
@@ -98,7 +152,7 @@ export const TimelineScreen = () => {
             .add(scrollIndex, "days")
             .format("DD MMM YYYY hh:mm:ss");
 
-          var dateAtIndex = currnetPlayIndex + " GMT";
+          var dateAtIndex = currnetPlayIndex + " UTC";
 
           axios
             .post(
@@ -106,8 +160,8 @@ export const TimelineScreen = () => {
               {
                 replay_request: {
                   userID: "1234567890",
-                  command: "START",
-                  val: dateAtIndex, //"19 Jan 2022 16:05:50 GMT" //fD //
+                  command: "STEP",
+                  val: "1h",
                 },
               },
               {
@@ -120,13 +174,48 @@ export const TimelineScreen = () => {
               }
             )
             .then(function (response) {
-              console.log(response);
+              //console.log(response);
+              const data = response.data;
+                // const { date } = response.data;
+                if (data.replay_reply.backend_time) {
+                  // const serverDate = moment(data.replay_reply.backend_time);
+                  // // "DD MMM YYYY hh:mm:ss"
+                  // console.log(serverDate);
+                  console.log('slowModeCount', slowModeCount)
+                  const formatedServerDate = moment(
+                    data.replay_reply.backend_time
+                  ).subtract(5,'hours').format("DD MM YYYY hh:mm");
+                   // console.log(moment(formatedServerDate))
+                  console.log(formatedServerDate);
+                  setHeaderTimeState(formatedServerDate);
+                  //"hardcode to 1h"
+                  console.log(scrollIndex);
+                 // var currentScrollIndex = scrollIndex*26;
+                  var offset = scrollIndex*26 + (24*(slowModeCount+1))/26;
+                  scrollDownToOffset(scrollIndex, offset);
+                  slowModeCount++;
+                }
             })
             .catch(function (error) {
               console.log(error);
             });
           playTime = moment();
         }
+      }
+    }
+    else {
+      fastModeCount=0;
+      fastModeCount=0;
+    }
+    if(autoSlow){
+      console.log('autoslow is true TimelineScreen')
+      var currentTime = moment();
+      const diff = currentTime.diff(autoSlowTime, "seconds");
+     // console.log(`diff , ${currentTime}`)
+     console.log(diff>=30)
+      if(diff>=30){
+        autoSlow=false;
+        fastSpeedMode=true;
       }
     }
   }, 1000);
@@ -173,11 +262,15 @@ export const TimelineScreen = () => {
   let formatedDate: React.SetStateAction<string>;
   let formatedDateCard: React.SetStateAction<string>;
 
-  const slowlyScrollDown = () => {
+  function scrollDownToOffset(currentScrollIndex: number, offset: number){
+    //const { offset } = props; 
+    //console.log('offset = ',offset);
     //offset + 80
-    const y = scrollIndex + 26;
-    scrollViewRef.current.scrollTo({ x: 0, y, animated: true });
-    setOffsetState(y);
+    //const y = scrollIndex + 26;
+    console.log(`curerent: ${currentScrollIndex} offset: ${offset}`);
+    scrollViewRef.current.scrollTo({ x: currentScrollIndex, y: offset, animated: true });
+
+   //setOffsetState(y);
   };
   // useEffect(() => {
   //   forceUpdate(formatedDate)
@@ -194,9 +287,10 @@ export const TimelineScreen = () => {
     const res = onScrollHandlerFunc(e);
 
     if (!res.error && (res.contentOffset_Y || res.contentOffset_Y == 0)) {
+     // console.log(res.contentOffset_Y);
       // if content scrolling on Y-axis is >= component height from top of the screen
       scrollIndex = res.contentOffset_Y / 26;
-      console.log("ss", scrollIndex);
+      //console.log("ss", scrollIndex);
 
       let newDateObj = moment(startTimeState).add(scrollIndex, "days").toDate();
 
@@ -648,50 +742,47 @@ export const TimelineScreen = () => {
             playButtonState == "play-circle"
               ? setPlayButtonState("stop-circle")
               : setPlayButtonState("play-circle");
-            console.log(scrollIndex);
+            //console.log(scrollIndex);
 
+            let currnetPlayIndex = moment(startTimeState)
+              .add(scrollIndex, "days")
+              .format("DD MMM YYYY hh:mm:ss");
+
+            var dateAtIndex = currnetPlayIndex + " GMT";
             //console.log(dateAtIndex);
 
             //if play button is active and stop circle is showing
             if (playButtonState == "play-circle") {
               playmode = true;
               playTime = moment();
-              //currentTime = new Date().toLocaleTimeString();
-              //   var playTimeIntervalID = setInterval(() => {
-              //    // playTime = playTime + 1;
-              //     console.log('playtime', playTime)
-              //  }, 1000);
 
-              //console.log(new Date().toLocaleTimeString());
-              //if(currentTime - playTime >=5){
-              //call step
-              //}
               console.log("play mode is true");
-              // axios
-              //   .post(
-              //     "https://iva-api-management.azure-api.net/iva/v1/datareplay",
-              //     {
-              //       replay_request: {
-              //         userID: "1234567890",
-              //         command: "START",
-              //         val: dateAtIndex, //"19 Jan 2022 16:05:50 GMT" //fD //
-              //       },
-              //     },
-              //     {
-              //       headers: {
-              //         "Ocp-Apim-Subscription-Key":
-              //           "8e522f5dd33b4892b2a8e149d504b153",
-              //         "Ocp-Apim-Trace": true,
-              //         "Content-Type": "application/json",
-              //       },
-              //     }
-              //   )
-              //   .then(function (response) {
-              //     console.log(response);
-              //   })
-              //   .catch(function (error) {
-              //     console.log(error);
-              //   });
+              axios
+                .post(
+                  "https://iva-api-management.azure-api.net/iva/v1/datareplay",
+                  {
+                    replay_request: {
+                      userID: "1234567890",
+                      command: "START",
+                      val: dateAtIndex, //"19 Jan 2022 16:05:50 GMT" //fD //
+                    },
+                  },
+                  {
+                    headers: {
+                      "Ocp-Apim-Subscription-Key":
+                        "8e522f5dd33b4892b2a8e149d504b153",
+                      "Ocp-Apim-Trace": true,
+                      "Content-Type": "application/json",
+                    },
+                  }
+                )
+                .then(function (response) {
+
+                 console.log('step callback succssful');
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
             } else {
               playmode = false;
               console.log("play mode inactive");
