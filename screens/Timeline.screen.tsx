@@ -40,11 +40,11 @@ export const setAutoSlowTime =  (props: any)=>{
 
 export const setFastSpeedMode = (props: boolean)=>{
   fastSpeedMode = props;
-  if(autoSlow && !fastSpeedMode){
-    // console.log("setToturtle");
-  }
-  else
-  console.log('rabbit')
+  // if(autoSlow && !fastSpeedMode){
+  //   // console.log("setToturtle");
+  // }
+  // else
+  // console.log('rabbit')
 }
 
 export var headerTime: string;
@@ -225,7 +225,7 @@ export const TimelineScreen = () => {
     if(autoSlow){
       if(!fastSpeedMode && fastClockState=="rabbit"){
         setfastClockState("turtle");
-        console.log('turrlw') 
+        //console.log('turrlw') 
       }
 
      // console.log('autoslow is true TimelineScreen')
@@ -238,7 +238,7 @@ export const TimelineScreen = () => {
         autoSlow=false;
         fastSpeedMode=true;
         setfastClockState("rabbit");
-        console.log("rabbit mode");
+       // console.log("rabbit mode");
       }
     }
   }, 1000);
