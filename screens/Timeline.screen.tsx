@@ -126,22 +126,36 @@ export const TimelineScreen = () => {
                   // console.log(serverDate);
                   console.log('fastModeCount', fastModeCount)
 
-                  const formatedServerDate = moment(
-                    data.replay_reply.backend_time
-                  ).subtract(5,'hours').format("DD MM YYYY hh:mm");
+                  //scrollIndex e.g 6 * 26 (snapping) = current pixel height from top
+                  var offset = scrollIndex*26 + (26*(fastModeCount+1))/24;
                   
-                  console.log(formatedServerDate);
+                  let formatedServerDate; 
+                  if( ((26*(fastModeCount+1))/24) <0.5){
+                    formatedServerDate = moment(
+                      data.replay_reply.backend_time
+                    ).subtract(5,'hours').format("DD-MM-YYYY - hh:mm A");
+                  }
+                  else
+                  {
+                     formatedServerDate = moment(
+                      data.replay_reply.backend_time
+                    ).subtract(5,'hours').format("DD-MM-YYYY - hh:mm A");
+                  }
+                  
+                  
+                 // console.log(formatedServerDate);
                    // console.log(moment(formatedServerDate))
-                  console.log(formatedServerDate);
-                  setHeaderTimeState(formatedServerDate);
+                  //console.log(formatedServerDate);
+                  // setHeaderTimeState(formatedServerDate);
                   //"hardcode to 1h"
                   //console.log(scrollIndex);
                  // var currentScrollIndex = scrollIndex*26;
-                 //scrollIndex e.g 6 * 26 (snapping) = current pixel height from top
-                  var offset = scrollIndex*26 + (24*(fastModeCount+1))/26;
-                  setOffsetState((24*(fastModeCount+1))/26);
-                  if(playmode)
+                                   console.log((26*(fastModeCount+1))/24)
+                 //setOffsetState((24*(fastModeCount+1))/26);
+                  if(playmode){
                     scrollDownToOffset(scrollIndex, offset);
+                    setHeaderTimeState(formatedServerDate);
+                  }
                   fastModeCount++;
                 }
               }
