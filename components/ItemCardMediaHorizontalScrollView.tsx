@@ -29,10 +29,20 @@ type mediaCardProps = {
   title: string;
   headerTitle?: string;
   headerIcon?: any;
+
   subTitle1?: string;
   subTitle2?: string;
+  subTitle3?: string;
+  subTitle4?: string;
+  subTitle5?: string;
+  subTitle6?: string;
+
   subTitleIcon1?: any;
   subTitleIcon2?: any;
+  subTitleIcon3?: any;
+  subTitleIcon4?: any;
+  subTitleIcon5?: any;
+  subTitleIcon6?: any;
 };
 
 export const ItemCardMediaHorizontalScrollView = (props: mediaCardProps) => {
@@ -59,20 +69,7 @@ export const ItemCardMediaHorizontalScrollView = (props: mediaCardProps) => {
           }
         }
       >
-        {/* <Image
-          //resizeMode='contain'
-          style={{
-            width: props.imageWidth ? props.imageWidth : 78,
-            height: props.imageHeight ? props.imageHeight : 104,
-          }}
-          source={
-            (props.imageSource?.image as ImageSourcePropType) || {
-              uri: props.imageSource?.uri,
-            }
-          }
-        /> */}
-        
-        <View
+              <View
           style={{
             flexDirection: "row",
             marginTop: 5,
@@ -83,6 +80,19 @@ export const ItemCardMediaHorizontalScrollView = (props: mediaCardProps) => {
             {props.headerTitle}
           </Text>
         </View>
+        <Image
+          //resizeMode='contain'
+          style={{
+            width: props.imageWidth ? props.imageWidth : 78,
+            height: props.imageHeight ? props.imageHeight : 104,
+          }}
+          source={
+            (props.imageSource?.image as ImageSourcePropType) || {
+              uri: props.imageSource?.uri,
+            }
+          }
+        />
+      
 
         <View
           style={{
@@ -114,25 +124,7 @@ export const ItemCardMediaHorizontalScrollView = (props: mediaCardProps) => {
               }
             ></Image>
           </View>
-          <View
-            style={{
-              marginTop: 8,
-              height: 30,
-              //width: 109
-            }}
-          >
-            <Text
-              numberOfLines={2}
-              style={{
-                fontSize: FONTSIZE?.[11],
-                fontWeight: "bold",
-                flex: 1,
-                textAlignVertical: "center",
-              }}
-            >
-              {props.title}
-            </Text>
-          </View>
+          
           <View style={{ marginLeft: 2 }}>
             <View
               style={{
@@ -154,6 +146,50 @@ export const ItemCardMediaHorizontalScrollView = (props: mediaCardProps) => {
               {props.subTitleIcon2}
               <Text style={{ fontSize: FONTSIZE?.[11], marginLeft: 5 }}>
                 {props.subTitle2}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 5,
+              }}
+            >
+              {props.subTitleIcon3}
+              <Text style={{ fontSize: FONTSIZE?.[11], marginLeft: 5 }}>
+                {props.subTitle3}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 5,
+              }}
+            >
+              {props.subTitleIcon4}
+              <Text style={{ fontSize: FONTSIZE?.[11], marginLeft: 5 }}>
+                {props.subTitle4}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 5,
+              }}
+            >
+              {props.subTitleIcon5}
+              <Text style={{ fontSize: FONTSIZE?.[11], marginLeft: 5 }}>
+                {props.subTitle5}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 5,
+              }}
+            >
+              {props.subTitleIcon6}
+              <Text style={{ fontSize: FONTSIZE?.[11], marginLeft: 5 }}>
+                {props.subTitle6}
               </Text>
             </View>
           </View>

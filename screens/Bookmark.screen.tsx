@@ -8,19 +8,13 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useState } from "react";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { Header } from "../navigation/Header";
-import { colors } from "../components/Color";
-import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
-import { FONTSIZE } from "../static/FontSize";
-import TimePeriodCalculator from "../components/TimePeriodCalculator";
-import { MappingTimeLineArray } from "../components/MappingTimelineArray";
-import { Label } from "../components/Label";
-import { FontAwesome5 } from "@expo/vector-icons";
-import moment from "moment";
-import Memoization from "../components/Memoization";
-import { onScrollHandlerFunc } from "../components/ComponentLayoutandScrollHandler";
 
+import { FONTSIZE } from "../static/FontSize";
+import { ItemCardMediaHorizontalScrollView } from "../components/ItemCardMediaHorizontalScrollView";
+import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
+import { colors } from '../components/Color';
+// import mapsImage from "../assets/images/maps.png";
 var DATA: any = [];
 
 export const BookmarkScreen = () => {
@@ -37,8 +31,83 @@ export const BookmarkScreen = () => {
         titleStyle={{ fontWeight: "bold" }}
       />
 
-     <Text>Watchlist Screen</Text>
-      {/* <DotedLineFunc/> */}
+<View style={{ marginTop: 10, marginLeft: 10, marginBottom: 25 }}>
+              <ItemCardMediaHorizontalScrollView
+               // imageSource={{ image: img.igdb.guardiansOfTheGalaxyMarvel }}
+                title=""//"guardians of the Galaxy"
+                
+                headerTitle="Potential Pipe Burst"
+
+                headerIcon={
+                  <MaterialCommunityIcons
+                  name="asterisk"
+                  size={16}
+                  color={colors.BLACK}
+                />
+                }
+
+                imageSource={{image: require("../assets/images/maps.png")}}
+                imageHeight={100}
+                imageWidth={300}
+                subTitle1="1:05 PM - 5 Nov 21"
+                subTitle2="Nicoll Highway 2 Street ABC"
+                subTitle3="On Going"
+                subTitle4="DMA 3"
+                subTitle5="Pressure: Abnormal"
+                subTitle6="No Water Complaints: 5"
+                
+                subTitleIcon1={
+                  <MaterialCommunityIcons
+                    name="clock-time-three-outline"
+                    size={16}
+                    color={colors.BLACK}
+                  />
+                }
+                subTitleIcon2={
+                  <MaterialCommunityIcons
+                    name="map-marker-outline"
+                    size={16}
+                    color={colors.BLACK}
+                  />
+                }
+                subTitleIcon3={
+                  <MaterialCommunityIcons
+                    name="format-list-checks"
+                    size={16}
+                    color={colors.BLACK}
+                  />
+                 // <MaterialCommunityIcons name="format-list-checks" size={24} color="black" />
+                }
+                subTitleIcon4={
+                  <MaterialCommunityIcons
+                    name="checkbox-intermediate"
+                    size={16}
+                    color={colors.BLACK}
+                  />
+                }
+                subTitleIcon5={
+                  // <Entypo name="circle" size={24} color="black" />
+                  // <FontAwesome name="circle" size={24} color="black" />
+                  <FontAwesome name="circle"
+                    //name="map-marker-outline"
+                    size={16}
+                    color={'red'}
+                  />
+                }
+                subTitleIcon6={
+                  <FontAwesome name="circle"
+                  //name="map-marker-outline"
+                  size={16}
+                  color={'red'}
+                />
+                }
+                //imageHeight={104}
+                //imageWidth={78}
+                //iconSource={{ image: img.icon.ps4 }}
+                //iconHeight={12}
+                //iconWidth={52}
+              />
+            </View>
     </View>
   );
 };

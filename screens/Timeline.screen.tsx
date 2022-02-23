@@ -1,5 +1,5 @@
 //import { HorizontalTimeline } from 'react-native-horizontal-timeline';
-import { Alert, Dimensions, StyleSheet, Text, View } from "react-native";
+import { Alert, Dimensions, StyleSheet, Text, View, Platform } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { colors } from "../components/Color";
@@ -28,6 +28,7 @@ export var autoSlowTime: any;
 var clockSyncInterval: any;
 var fastModeCount = 0;
 var slowModeCount = 0;
+var scrollEnabled = true;
 
 export const setAutoSlow = (props: boolean)=>{
   autoSlow = props;
@@ -39,12 +40,19 @@ export const setAutoSlowTime =  (props: any)=>{
 
 export const setFastSpeedMode = (props: boolean)=>{
   fastSpeedMode = props;
+  if(autoSlow && !fastSpeedMode){
+    // console.log("setToturtle");
+  }
+  else
+  console.log('rabbit')
 }
+
+export var headerTime: string;
 
 export const TimelineScreen = () => {
   const [startTimeState, setStartTimeState] = useState("2021-07-05 00:00");
   const [endTimeState, setEndTimeState] = useState("2021-09-29 00:00");
-  const [headerTimeState, setHeaderTimeState] = useState("0");
+  const [headerTimeState, setHeaderTimeState] = useState("05-07-2021 - 12:00 AM");
   const [formatedDateCardState, setFormatedDateCardState] = useState("");
   const [date1State, setDate2State] = useState("0");
   const [playButtonState, setPlayButtonState] = useState("play-circle");
@@ -57,12 +65,13 @@ export const TimelineScreen = () => {
   // Your app
   // </Context.Provider>
   const scrollViewRef = useRef();
-
   let labelShown = false;
-  let headerTime = "0";
   let date1: any = "";
   const playButtonUseRef = useRef(null);
 
+  const getHeaderTimeState = ()=>{
+    headerTime = headerTimeState
+  }
   // const STEP = {
   //   replay_request: {
   //     userID: "1234567890",
@@ -116,17 +125,23 @@ export const TimelineScreen = () => {
                   // // "DD MMM YYYY hh:mm:ss"
                   // console.log(serverDate);
                   console.log('fastModeCount', fastModeCount)
+
                   const formatedServerDate = moment(
                     data.replay_reply.backend_time
                   ).subtract(5,'hours').format("DD MM YYYY hh:mm");
+                  
+                  console.log(formatedServerDate);
                    // console.log(moment(formatedServerDate))
                   console.log(formatedServerDate);
                   setHeaderTimeState(formatedServerDate);
                   //"hardcode to 1h"
-                  console.log(scrollIndex);
+                  //console.log(scrollIndex);
                  // var currentScrollIndex = scrollIndex*26;
+                 //scrollIndex e.g 6 * 26 (snapping) = current pixel height from top
                   var offset = scrollIndex*26 + (24*(fastModeCount+1))/26;
-                  scrollDownToOffset(scrollIndex, offset);
+                  setOffsetState((24*(fastModeCount+1))/26);
+                  if(playmode)
+                    scrollDownToOffset(scrollIndex, offset);
                   fastModeCount++;
                 }
               }
@@ -208,14 +223,22 @@ export const TimelineScreen = () => {
       fastModeCount=0;
     }
     if(autoSlow){
-      console.log('autoslow is true TimelineScreen')
+      if(!fastSpeedMode && fastClockState=="rabbit"){
+        setfastClockState("turtle");
+        console.log('turrlw') 
+      }
+
+     // console.log('autoslow is true TimelineScreen')
       var currentTime = moment();
       const diff = currentTime.diff(autoSlowTime, "seconds");
      // console.log(`diff , ${currentTime}`)
-     console.log(diff>=30)
+     //console.log(diff>=30)
       if(diff>=30){
+        console.log('30 sec passed auto slow turned off')
         autoSlow=false;
         fastSpeedMode=true;
+        setfastClockState("rabbit");
+        console.log("rabbit mode");
       }
     }
   }, 1000);
@@ -229,23 +252,8 @@ export const TimelineScreen = () => {
     } else {
       console.log("slow mode");
     }
-
-    // const options = {
-    //   method: 'POST',
-    //   headers: {
-    //     'Ocp-Apim-Subscription-Key': '8e522f5dd33b4892b2a8e149d504b153',
-    //     'Ocp-Apim-Trace': true,
-    //     'Content-Type': 'application/json'
-    //   },
-    //   data: qs.stringify({​​​​​​​​​​​​​​
-    //     "replay_request": {​​​​​​​​​​​​​​​​​​​​​​​​​
-    //         "userID": "1234567890",
-    //         "command": "START",
-    //         "val": "21 Jul 2021 16:00:00 UTC"
-    //     }​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
-    // }​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​),
-    // url: 'https://iva-api-management.azure-api.net/iva/v1/datareplay'
-    // };
+  
+ //   setHeaderTimeState()
 
     //formatedDateCard = moment(startTimeState).format("d MMM YY");
     //date1 = moment(startTimeState).add(60 , "days").toDate();
@@ -346,7 +354,7 @@ export const TimelineScreen = () => {
                           textStyle={{
                             alignItems: "center",
                             //textAlign: 'center',
-                            fontSize: 8,
+                            fontSize: 10,
                             alignSelf: "baseline",
                           }}
                           labelContainerStyle={{
@@ -358,7 +366,7 @@ export const TimelineScreen = () => {
                             marginVertical: 0,
                             alignSelf: "baseline",
                           }}
-                          numberOfLines={2}
+                          numberOfLines={3}
                           label={
                             '09/08/2021 - "Leak turning into a burst in DMA3"'
                           }
@@ -383,7 +391,7 @@ export const TimelineScreen = () => {
                       textStyle={{
                         alignItems: "center",
                         textAlign: "center",
-                        fontSize: 8,
+                        fontSize: 10,
                         alignSelf: "center",
                       }}
                       labelContainerStyle={{
@@ -486,7 +494,7 @@ export const TimelineScreen = () => {
                         textStyle={{
                           alignItems: "center",
                           //textAlign: 'center',
-                          fontSize: 8,
+                          fontSize: 10,
 
                           alignSelf: "baseline",
                         }}
@@ -499,7 +507,7 @@ export const TimelineScreen = () => {
                           marginVertical: 0,
                           alignSelf: "baseline",
                         }}
-                        numberOfLines={2}
+                        numberOfLines={3}
                         label={
                           '05/09/2021 - "Valve (V11) closure operation in DMA1"'
                         }
@@ -544,7 +552,7 @@ export const TimelineScreen = () => {
                         textStyle={{
                           alignItems: "center",
                           //textAlign: 'center',
-                          fontSize: 8,
+                          fontSize: 10,
 
                           alignSelf: "baseline",
                         }}
@@ -557,7 +565,7 @@ export const TimelineScreen = () => {
                           marginVertical: 0,
                           alignSelf: "baseline",
                         }}
-                        numberOfLines={2}
+                        numberOfLines={3}
                         label={
                           '09/09/2021 - "Leak turning into a burst in DMA3"'
                         }
@@ -593,7 +601,7 @@ export const TimelineScreen = () => {
                         textStyle={{
                           alignItems: "center",
                           //textAlign: 'center',
-                          fontSize: 8,
+                          fontSize: 10,
 
                           alignSelf: "baseline",
                         }}
@@ -606,7 +614,7 @@ export const TimelineScreen = () => {
                           marginVertical: 0,
                           alignSelf: "baseline",
                         }}
-                        numberOfLines={2}
+                        numberOfLines={3}
                         label={
                           '21/09/2021 - "Valve (V11) closure operation in DMA1"'
                         }
@@ -672,6 +680,7 @@ export const TimelineScreen = () => {
         </View>
 
         <ScrollView
+          scrollEnabled={scrollEnabled}
           scrollEventThrottle={1}
           ref={scrollViewRef}
           snap
@@ -739,17 +748,24 @@ export const TimelineScreen = () => {
         />
         <MaterialCommunityIcons
           onPress={() => {
-            playButtonState == "play-circle"
-              ? setPlayButtonState("stop-circle")
-              : setPlayButtonState("play-circle");
+            if(playButtonState == "play-circle"){
+              setPlayButtonState("stop-circle")
+              scrollEnabled=false
+            }
+            else{
+              setPlayButtonState("play-circle");
+              scrollEnabled=true
+            }
             //console.log(scrollIndex);
 
+            //missing hours
             let currnetPlayIndex = moment(startTimeState)
               .add(scrollIndex, "days")
+              //.add(offsetState, 'hours')
               .format("DD MMM YYYY hh:mm:ss");
 
             var dateAtIndex = currnetPlayIndex + " GMT";
-            //console.log(dateAtIndex);
+            console.log('dateAtIndex', dateAtIndex);
 
             //if play button is active and stop circle is showing
             if (playButtonState == "play-circle") {
@@ -849,7 +865,7 @@ const styles = StyleSheet.create({
 
   marker: {
     //width: Dimensions.get("window").width,
-    transform: [{ translateY: -9 }, { translateX: -50 }],
+    transform: [{ translateY: Platform.OS === 'ios'? -6 : -9 }, { translateX: -50 }],
     //translateY: -12,
     zIndex: -999,
     //backgroundColor: colors.ARGON_PURPLE,

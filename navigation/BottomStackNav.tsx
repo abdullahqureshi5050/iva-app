@@ -204,7 +204,7 @@ export const BottomStackNav = function () {
           },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Favourites"
         component={TempScreen}
         options={{
@@ -229,7 +229,7 @@ export const BottomStackNav = function () {
             );
           },
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

@@ -34,6 +34,8 @@ import {
   setFastSpeedMode,
   setAutoSlowTime,
   playmode,
+  headerTime,
+  TimelineScreen
 } from "./Timeline.screen";
 import moment from "moment";
 
@@ -49,6 +51,7 @@ export const MessageScreen = (props: any) => {
       if(fastSpeedMode){
         //console.log("autoSlow", autoSlow);
         setAutoSlow(true);
+        console.log('auto slow enabled for 30 sec');
         //console.log("autoSlow", autoSlow);
         var currentTime:any = moment();
       setAutoSlowTime(currentTime) //time.now
@@ -58,6 +61,7 @@ export const MessageScreen = (props: any) => {
       else{
        
         if(autoSlow){
+          console.log('autSlow reset');
           var currentTime:any = moment();
           setAutoSlowTime(currentTime); 
         }
