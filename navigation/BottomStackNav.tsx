@@ -16,7 +16,7 @@ import { MaterialCommunityIcons, Feather, Ionicons } from "@expo/vector-icons";
 import { colors } from "../components/Color";
 import { TopTabs } from "./TopStackNav";
 import  { TimelineScreen }  from "../screens/Timeline.screen";
-
+import { TempScreen } from "../screens/Temp.screen";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -181,6 +181,32 @@ export const BottomStackNav = function () {
          <Tab.Screen
         name="Timeline"
         component={TimelineScreen}
+        options={{
+          //  headerShown: true,
+          //  tabBarActiveTintColor: colors.FOREST_GREEN,
+          // headerStyle: {
+          //   height: 30, // Specify the height of your custom header
+          // },
+          tabBarIcon: (props: any) => {
+            return props.focused ? (
+              <MaterialCommunityIcons
+                name="timeline-clock"
+                size={props.size || 24}
+                color={props.color || colors.BLACK}
+              />
+            ) : (
+              <MaterialCommunityIcons
+              name="timeline-clock-outline"
+              size={props.size || 24}
+              color={props.color || colors.BLACK}
+            />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Favourites"
+        component={TempScreen}
         options={{
           //  headerShown: true,
           //  tabBarActiveTintColor: colors.FOREST_GREEN,
