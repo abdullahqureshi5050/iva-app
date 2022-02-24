@@ -204,9 +204,9 @@ export const BottomStackNav = function () {
           },
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Favourites"
-        component={TempScreen}
+        component={ChatScreen}
         options={{
           //  headerShown: true,
           //  tabBarActiveTintColor: colors.FOREST_GREEN,
@@ -229,7 +229,7 @@ export const BottomStackNav = function () {
             );
           },
         }}
-      /> */}
+      />
     </Tab.Navigator>
   );
 };
