@@ -1,5 +1,12 @@
 //import { HorizontalTimeline } from 'react-native-horizontal-timeline';
-import { Alert, Dimensions, StyleSheet, Text, View, Platform } from "react-native";
+import {
+  Alert,
+  Dimensions,
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+} from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { colors } from "../components/Color";
@@ -24,36 +31,38 @@ export var playmode = false;
 var currentTime;
 export var fastSpeedMode: boolean = true;
 export var autoSlow = false;
-export var autoSlowTime: any; 
+export var autoSlowTime: any;
 var clockSyncInterval: any;
 var fastModeCount = 0;
 var slowModeCount = 0;
 var scrollEnabled = true;
 var offsetHours = 0;
 
-export const setAutoSlow = (props: boolean)=>{
+export const setAutoSlow = (props: boolean) => {
   autoSlow = props;
-}
+};
 
-export const setAutoSlowTime =  (props: any)=>{
+export const setAutoSlowTime = (props: any) => {
   autoSlowTime = props;
-}
+};
 
-export const setFastSpeedMode = (props: boolean)=>{
+export const setFastSpeedMode = (props: boolean) => {
   fastSpeedMode = props;
   // if(autoSlow && !fastSpeedMode){
   //   // console.log("setToturtle");
   // }
   // else
   // console.log('rabbit')
-}
+};
 
 export var headerTime: string;
 
 export const TimelineScreen = () => {
   const [startTimeState, setStartTimeState] = useState("2021-07-05 00:00");
   const [endTimeState, setEndTimeState] = useState("2021-09-29 00:00");
-  const [headerTimeState, setHeaderTimeState] = useState("05-07-2021 - 12:00 AM");
+  const [headerTimeState, setHeaderTimeState] = useState(
+    "05-07-2021 - 12:00 AM"
+  );
   const [formatedDateCardState, setFormatedDateCardState] = useState("");
   const [date1State, setDate2State] = useState("0");
   const [playButtonState, setPlayButtonState] = useState("play-circle");
@@ -70,9 +79,9 @@ export const TimelineScreen = () => {
   let date1: any = "";
   const playButtonUseRef = useRef(null);
 
-  const getHeaderTimeState = ()=>{
-    headerTime = headerTimeState
-  }
+  const getHeaderTimeState = () => {
+    headerTime = headerTimeState;
+  };
   // const STEP = {
   //   replay_request: {
   //     userID: "1234567890",
@@ -125,19 +134,20 @@ export const TimelineScreen = () => {
                   // const serverDate = moment(data.replay_reply.backend_time);
                   // // "DD MMM YYYY hh:mm:ss"
                   // console.log(serverDate);
-                  console.log('fastModeCount', fastModeCount)
+                  console.log("fastModeCount", fastModeCount);
 
                   //scrollIndex e.g 6 * 26 (snapping) = current pixel height from top
-                  var offset = scrollIndex*26 + (26*(fastModeCount+1))/24;
+                  var offset =
+                    scrollIndex * 26 + (26 * (fastModeCount + 1)) / 24;
                   // var offset = scrollIndex*26 + (26*(offsetHours))/24;
-              
-                  let formatedServerDate; 
-                 // console.log('offset ',(26*(fastModeCount+1))/24);
-                 console.log( data.replay_reply.backend_time);
+
+                  let formatedServerDate;
+                  // console.log('offset ',(26*(fastModeCount+1))/24);
+                  console.log(data.replay_reply.backend_time);
                   // if( ((26*(fastModeCount+1))/24) <(26/2)){
-                    formatedServerDate = moment(
-                      data.replay_reply.backend_time
-                    ).subtract(5,'hours').format("DD-MM-YYYY - hh:mm A");
+                  formatedServerDate = moment(data.replay_reply.backend_time)
+                    .subtract(5, "hours")
+                    .format("DD-MM-YYYY - hh:mm A");
                   // }
                   // else
 
@@ -146,22 +156,21 @@ export const TimelineScreen = () => {
                   //     data.replay_reply.backend_time
                   //   ).subtract(5,'hours').format("DD-MM-YYYY - hh:mm PM");
                   // }
-                  
-                  
-                 // console.log(formatedServerDate);
-                   // console.log(moment(formatedServerDate))
+
+                  // console.log(formatedServerDate);
+                  // console.log(moment(formatedServerDate))
                   //console.log(formatedServerDate);
                   // setHeaderTimeState(formatedServerDate);
                   //"hardcode to 1h"
                   //console.log(scrollIndex);
-                 // var currentScrollIndex = scrollIndex*26;
-                                   console.log((26*(fastModeCount+1))/24)
-                 //setOffsetState((24*(fastModeCount+1))/26);
-                  if(playmode){
+                  // var currentScrollIndex = scrollIndex*26;
+                  console.log((26 * (fastModeCount + 1)) / 24);
+                  //setOffsetState((24*(fastModeCount+1))/26);
+                  if (playmode) {
                     scrollDownToOffset(scrollIndex, offset);
                     setHeaderTimeState(formatedServerDate);
                     //storing extra hours
-                    offsetHours = fastModeCount+1;
+                    offsetHours = fastModeCount + 1;
                   }
                   fastModeCount++;
                 }
@@ -175,7 +184,7 @@ export const TimelineScreen = () => {
             });
           playTime = moment();
         }
-      } 
+      }
       //slow mode case
       else {
         //fastModeCount= 0;
@@ -211,26 +220,27 @@ export const TimelineScreen = () => {
               }
             )
             .then(function (response) {
-              if(response){
+              if (response) {
                 const data = response.data;
                 // const { date } = response.data;
                 if (data.replay_reply.backend_time) {
                   // const serverDate = moment(data.replay_reply.backend_time);
                   // // "DD MMM YYYY hh:mm:ss"
                   // console.log(serverDate);
-                  console.log('fastModeCount', fastModeCount)
+                  console.log("fastModeCount", fastModeCount);
 
                   //scrollIndex e.g 6 * 26 (snapping) = current pixel height from top
-                  var offset = scrollIndex*26 + (26*(fastModeCount+1))/24;
+                  var offset =
+                    scrollIndex * 26 + (26 * (fastModeCount + 1)) / 24;
                   // var offset = scrollIndex*26 + (26*(offsetHours))/24;
-              
-                  let formatedServerDate; 
-                 // console.log('offset ',(26*(fastModeCount+1))/24);
-                 console.log( data.replay_reply.backend_time);
+
+                  let formatedServerDate;
+                  // console.log('offset ',(26*(fastModeCount+1))/24);
+                  console.log(data.replay_reply.backend_time);
                   // if( ((26*(fastModeCount+1))/24) <(26/2)){
-                    formatedServerDate = moment(
-                      data.replay_reply.backend_time
-                    ).subtract(5,'hours').format("DD-MM-YYYY - hh:mm A");
+                  formatedServerDate = moment(data.replay_reply.backend_time)
+                    .subtract(5, "hours")
+                    .format("DD-MM-YYYY - hh:mm A");
                   // }
                   // else
 
@@ -239,22 +249,21 @@ export const TimelineScreen = () => {
                   //     data.replay_reply.backend_time
                   //   ).subtract(5,'hours').format("DD-MM-YYYY - hh:mm PM");
                   // }
-                  
-                  
-                 // console.log(formatedServerDate);
-                   // console.log(moment(formatedServerDate))
+
+                  // console.log(formatedServerDate);
+                  // console.log(moment(formatedServerDate))
                   //console.log(formatedServerDate);
                   // setHeaderTimeState(formatedServerDate);
                   //"hardcode to 1h"
                   //console.log(scrollIndex);
-                 // var currentScrollIndex = scrollIndex*26;
-                                   console.log((26*(fastModeCount+1))/24)
-                 //setOffsetState((24*(fastModeCount+1))/26);
-                  if(playmode){
+                  // var currentScrollIndex = scrollIndex*26;
+                  console.log((26 * (fastModeCount + 1)) / 24);
+                  //setOffsetState((24*(fastModeCount+1))/26);
+                  if (playmode) {
                     scrollDownToOffset(scrollIndex, offset);
                     setHeaderTimeState(formatedServerDate);
                     //storing extra hours
-                    offsetHours = fastModeCount+1;
+                    offsetHours = fastModeCount + 1;
                   }
                   fastModeCount++;
                 }
@@ -266,28 +275,27 @@ export const TimelineScreen = () => {
           playTime = moment();
         }
       }
-    }
-    else {
+    } else {
       //fastModeCount=0;
       //fastModeCount=0;
     }
-    if(autoSlow){
-      if(!fastSpeedMode && fastClockState=="rabbit"){
+    if (autoSlow) {
+      if (!fastSpeedMode && fastClockState == "rabbit") {
         setfastClockState("turtle");
-        //console.log('turrlw') 
+        //console.log('turrlw')
       }
 
-     // console.log('autoslow is true TimelineScreen')
+      // console.log('autoslow is true TimelineScreen')
       var currentTime = moment();
       const diff = currentTime.diff(autoSlowTime, "seconds");
-     // console.log(`diff , ${currentTime}`)
-     //console.log(diff>=30)
-      if(diff>=30){
-        console.log('30 sec passed auto slow turned off')
-        autoSlow=false;
-        fastSpeedMode=true;
+      // console.log(`diff , ${currentTime}`)
+      //console.log(diff>=30)
+      if (diff >= 30) {
+        console.log("30 sec passed auto slow turned off");
+        autoSlow = false;
+        fastSpeedMode = true;
         setfastClockState("rabbit");
-       // console.log("rabbit mode");
+        // console.log("rabbit mode");
       }
     }
   }, 1000);
@@ -301,8 +309,8 @@ export const TimelineScreen = () => {
     } else {
       console.log("slow mode");
     }
-  
- //   setHeaderTimeState()
+
+    //   setHeaderTimeState()
 
     //formatedDateCard = moment(startTimeState).format("d MMM YY");
     //date1 = moment(startTimeState).add(60 , "days").toDate();
@@ -319,16 +327,20 @@ export const TimelineScreen = () => {
   let formatedDate: React.SetStateAction<string>;
   let formatedDateCard: React.SetStateAction<string>;
 
-  function scrollDownToOffset(currentScrollIndex: number, offset: number){
-    //const { offset } = props; 
+  function scrollDownToOffset(currentScrollIndex: number, offset: number) {
+    //const { offset } = props;
     //console.log('offset = ',offset);
     //offset + 80
     //const y = scrollIndex + 26;
     console.log(`curerent: ${currentScrollIndex} offset: ${offset}`);
-    scrollViewRef.current.scrollTo({ x: currentScrollIndex, y: offset, animated: true });
+    scrollViewRef.current.scrollTo({
+      x: currentScrollIndex,
+      y: offset,
+      animated: true,
+    });
 
-   //setOffsetState(y);
-  };
+    //setOffsetState(y);
+  }
   // useEffect(() => {
   //   forceUpdate(formatedDate)
   //   //useCallback((props) =>  setHeaderTimeState(props), []);
@@ -347,7 +359,7 @@ export const TimelineScreen = () => {
     const res = onScrollHandlerFunc(e);
 
     if (!res.error && (res.contentOffset_Y || res.contentOffset_Y == 0)) {
-     // console.log(res.contentOffset_Y);
+      // console.log(res.contentOffset_Y);
       // if content scrolling on Y-axis is >= component height from top of the screen
       scrollIndex = res.contentOffset_Y / 26;
       //console.log("ss", scrollIndex);
@@ -800,30 +812,29 @@ export const TimelineScreen = () => {
         />
         <MaterialCommunityIcons
           onPress={() => {
-            if(playButtonState == "play-circle"){
-              setPlayButtonState("stop-circle")
-              scrollEnabled=false
-            }
-            else{
+            if (playButtonState == "play-circle") {
+              setPlayButtonState("stop-circle");
+              scrollEnabled = false;
+            } else {
               setPlayButtonState("play-circle");
-              scrollEnabled=true
+              scrollEnabled = true;
             }
             //console.log(scrollIndex);
 
             //add offset hours missing
             let currnetPlayIndex = moment(startTimeState)
               .add(scrollIndex, "days")
-              .add(offsetHours, 'hours')
+              .add(offsetHours, "hours")
               .format("DD MMM YYYY hh:mm:ss");
 
             var dateAtIndex = currnetPlayIndex + " GMT";
-            console.log('dateAtIndex', dateAtIndex);
+            console.log("dateAtIndex", dateAtIndex);
 
             //if play button is active and stop circle is showing
             if (playButtonState == "play-circle") {
               playmode = true;
               playTime = moment();
-              
+
               console.log("play mode is true");
               axios
                 .post(
@@ -845,10 +856,9 @@ export const TimelineScreen = () => {
                   }
                 )
                 .then(function (response) {
-                  console.log(scrollIndex*26 + (24*offsetHours)/26)
-                 console.log('start callback succssful');
-                 //scrollViewRef.current.scrollTo({ x: 0, y: scrollIndex*26 + (24*offsetHours)/26, animated: true });
-
+                  console.log(scrollIndex * 26 + (24 * offsetHours) / 26);
+                  console.log("start callback succssful");
+                  //scrollViewRef.current.scrollTo({ x: 0, y: scrollIndex*26 + (24*offsetHours)/26, animated: true });
                 })
                 .catch(function (error) {
                   console.log(error);
@@ -919,7 +929,10 @@ const styles = StyleSheet.create({
 
   marker: {
     //width: Dimensions.get("window").width,
-    transform: [{ translateY: Platform.OS === 'ios'? -6 : -9 }, { translateX: -50 }],
+    transform: [
+      { translateY: Platform.OS === "ios" ? -6 : -9 },
+      { translateX: -50 },
+    ],
     //translateY: -12,
     zIndex: -999,
     //backgroundColor: colors.ARGON_PURPLE,
