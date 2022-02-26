@@ -1,3 +1,6 @@
+
+//Temp screen for testing new components seperately. 
+
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { ItemCardMediaHorizontalScrollView } from "../components/ItemCardMediaHorizontalScrollView";

@@ -10,7 +10,7 @@ import { KnowledgeStackNav } from "./KnowledgeStackNav";
 import { MessageScreen } from "../screens/Message.screen";
 import { ChatScreen } from "../screens/Chat.screen";
 import { FlyerChatScreen } from "../screens/FlyerChat";
-import { BookmarkScreen } from "../screens/Bookmark.screen";
+import { WatchListScreen } from "../screens/WatchList.screen";
 
 import { MaterialCommunityIcons, Feather, Ionicons } from "@expo/vector-icons";
 import { colors } from "../components/Color";
@@ -81,7 +81,7 @@ export const BottomStackNav = function () {
     >
       <Tab.Screen
         name="Chat"
-        component={MessageScreen}
+        component={ChatScreen}
         options={({ route, navigation }) => ({
     
           headerRight: (props: any) => {
@@ -127,7 +127,7 @@ export const BottomStackNav = function () {
       />
       <Tab.Screen
         name="Watchlist"
-        component={BookmarkScreen}
+        component={WatchListScreen}
         options={{
           //  tabBarActiveTintColor: colors.FOREST_GREEN,
           // headerShown: true,
@@ -204,32 +204,7 @@ export const BottomStackNav = function () {
           },
         }}
       />
-      <Tab.Screen
-        name="Favourites"
-        component={ChatScreen}
-        options={{
-          //  headerShown: true,
-          //  tabBarActiveTintColor: colors.FOREST_GREEN,
-          // headerStyle: {
-          //   height: 30, // Specify the height of your custom header
-          // },
-          tabBarIcon: (props: any) => {
-            return props.focused ? (
-              <MaterialCommunityIcons
-                name="timeline-clock"
-                size={props.size || 24}
-                color={props.color || colors.BLACK}
-              />
-            ) : (
-              <MaterialCommunityIcons
-              name="timeline-clock-outline"
-              size={props.size || 24}
-              color={props.color || colors.BLACK}
-            />
-            );
-          },
-        }}
-      />
+
     </Tab.Navigator>
   );
 };

@@ -1,3 +1,6 @@
+
+// a chat library not used in this app. 
+
 import { Chat, MessageType } from "@flyerhq/react-native-chat-ui";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";

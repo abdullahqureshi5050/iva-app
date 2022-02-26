@@ -17,7 +17,7 @@ import { colors } from '../components/Color';
 // import mapsImage from "../assets/images/maps.png";
 var DATA: any = [];
 
-export const BookmarkScreen = () => {
+export const WatchListScreen = () => {
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
