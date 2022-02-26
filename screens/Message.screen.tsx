@@ -1,3 +1,6 @@
+
+// front end chat screen alternative for figma design
+
 import React, { useEffect, useRef, useState, createContext } from "react";
 import {
   StyleSheet,

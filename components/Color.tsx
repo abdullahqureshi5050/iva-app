@@ -36,6 +36,8 @@ export const colors = {
   DARK_GRAY: "#AAAAAA",
   GRAY: '#e7e7e7',
   blue: '#2196F3',
+  
+  //argon purple color code changed to blue
   ARGON_PURPLE: '#007bff',
   BUBBLE: '#f4f5f7',
   //'#7168e4',

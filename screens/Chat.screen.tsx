@@ -1,8 +1,11 @@
+// chat screen funtional with API
+
 import React, {
   useState,
   useCallback,
   useEffect,
-  useLayoutEffect,
+  useRef,
+  //useLayoutEffect,
 } from "react";
 import { Bubble, GiftedChat } from "react-native-gifted-chat";
 import { View, Button, Text } from "react-native";
@@ -12,6 +15,15 @@ import { Header } from "../navigation/Header";
 import { colors } from "../components/Color";
 import { FONTSIZE } from "../static/FontSize";
 import { Label } from "../components/Label";
+import { ButtonC } from "../components/Button";
+
+import {
+  MaterialCommunityIcons,
+  FontAwesome,
+  Ionicons,
+} from "@expo/vector-icons";
+
+import RBSheet from "react-native-raw-bottom-sheet";
 
 var token: any;
 var expiresIn: any;
@@ -22,12 +34,16 @@ let serverMsgID: any = [];
 var directLine: any; //= new DirectLine();
 
 const secret = "FDtdf77b6yk.M_LsqLypdwONy7IzSiI9ibN91ENzrpq2xvYIWvZOtk4";
+
+//working secret
 //FDtdf77b6yk.SwCgCA-INHIjabHDT7p-phmzEQUxKRGQu_P4_xTUHk8
-//old bot
+
+//old bot secret depracated
 //6vBE5M8DY44.4eylrhaj3gsSPxb7ytvL2iPheAkWql6xD_YNVvALrlo
 
 export const ChatScreen = () => {
   const [messages, setMessages] = useState([{}]);
+  const refRBSheet: any = useRef();
 
   useEffect(() => {
     try {
@@ -50,13 +66,7 @@ export const ChatScreen = () => {
 
             config = {
               secret: secret,
-              ///* put your Direct Line secret here */,
               token: res.data.token,
-              //conversationId: res.data.conversationId,
-              ///* or put your Direct Line token here (supply secret OR token, not both) */,
-              //domain: /* optional: if you are not using the default Direct Line endpoint, e.g. if you are using a region-specific endpoint, put its full URL here */
-              //webSocket: /* optional: false if you want to use polling GET to receive messages. Defaults to true (use WebSocket). */,
-              //pollingInterval: /* optional: set polling interval in milliseconds. Default to 1000 */,
             };
 
             directLine = new DirectLine(config);
@@ -102,27 +112,34 @@ export const ChatScreen = () => {
       );
 
     directLine.activity$.subscribe((activity: any) => {
-      console.log(serverMsgID.length);
 
-      if (serverMsgID.length == 0) {
-        serverMsgID.push(activity.id);
-        console.log("0: ", activity.id);
-      } else {
-        serverMsgID.push("1: ", activity.id);
-        console.log("1: ", activity.id);
-      }
+      //--------------------------------write id filter logic here 
+      console.log(activity.id);
 
-      if (
-        serverMsgID.length > 0 &&
-        serverMsgID[serverMsgID.length - 1] == activity.id
-      ) {
-        console.log("inside");
-        return;
-      }
-      console.log(`serverMsgID[serverMsgID.length] = ${serverMsgID}`);
+      
+      //--------------------------------id filter logic end
+
+      // if (serverMsgID.length == 0) {
+      //   serverMsgID.push(activity.id);
+      //   console.log("0: ", activity.id);
+      // } else {
+      //   serverMsgID.push("1: ", activity.id);
+      //   console.log("1: ", activity.id);
+      // }
+
+      // if (
+      //   serverMsgID.length > 0 &&
+      //   serverMsgID[serverMsgID.length - 1] == activity.id
+      // ) {
+      //   console.log("inside");
+      //   return;
+      // }
+
+      //console.log(`serverMsgID[serverMsgID.length] = ${serverMsgID}`);
+
       const obj = [
         {
-          _id: activity.id,
+          _id: count + 1, //activity.id,
           text: activity.text,
           createdAt: new Date(),
 
@@ -166,6 +183,105 @@ export const ChatScreen = () => {
         }
       />
       <GiftedChat
+        renderSend={({ text, onSend }) => (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <FontAwesome
+              name="send"
+              size={24}
+              color={colors.ARGON_PURPLE}
+              onPress={() => {
+                if (text && onSend) {
+                  onSend({ text: text.trim() }, true);
+                }
+              }}
+            />
+
+            <View
+              style={{
+                justifyContent: "center",
+                alignContent: "center",
+                alignSelf: "center",
+              }}
+            >
+              <ButtonC
+                //onPress={refRBSheet.current?.open()}
+                onPress={() => refRBSheet.current?.open()}
+                textContainerStyle={{
+                  marginLeft: 10,
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                  alignSelf: "center",
+                  borderColor: colors.WHITE,
+                  shadowColor: colors.WHITE,
+
+                  //borderWidth: 1,
+                  //borderRadius: 1,
+                  //elevation: 5,
+                }}
+                title={
+                  <MaterialCommunityIcons
+                    style={{
+                      justifyContent: "center",
+                      alignContent: "center",
+                      textAlign: "center",
+                      alignItems: "center",
+                    }}
+                    name="microphone"
+                    size={30}
+                    color={colors.ARGON_PURPLE}
+                  />
+                }
+                //textContainerStyle={{ backgroundColor: "red" }}
+                //titleShown={false}
+                textStyle={{
+                  //margin: 0,
+                  // padding: 0,
+                  justifyContent: "center",
+                  alignContent: "center",
+                  textAlign: "center",
+                  alignItems: "center",
+                  backgroundColor: colors.WHITE,
+                  alignSelf: "flex-end",
+                  //padding: 10,
+                }}
+              ></ButtonC>
+              {/* microphone btn useRef RBSheet */}
+              {/* <Button title="OPEN BOTTOM SHEET" onPress={() => refRBSheet.current.open()} /> */}
+              <RBSheet
+                ref={refRBSheet}
+                closeOnDragDown={true}
+                closeOnPressMask={false}
+                customStyles={{
+                  wrapper: {
+                    backgroundColor: "transparent",
+                  },
+                  draggableIcon: {
+                    backgroundColor: "#000",
+                  },
+                }}
+              >
+                {/* <YourOwnComponent /> */}
+                <View
+                  style={{
+                    justifyContent: "center",
+                    flex: 1,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>Speech to Text...</Text>
+                </View>
+              </RBSheet>
+            </View>
+          </View>
+        )}
         messages={messages as any}
         onSend={(messages) => onSend(messages)}
         user={{
@@ -200,9 +316,9 @@ export const ChatScreen = () => {
         style={{
           flexDirection: "row",
           justifyContent: "center",
-          alignSelf: 'center',
-          alignContent: 'center',
-          alignItems:'center',
+          alignSelf: "center",
+          alignContent: "center",
+          alignItems: "center",
           position: "absolute",
           backgroundColor: colors.WHITE,
           bottom: 50,

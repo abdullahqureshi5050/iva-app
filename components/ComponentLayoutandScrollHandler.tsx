@@ -1,3 +1,9 @@
+
+/* 
+  handler to get/ return Y-axis and 
+  X-axis DIP from indside ScrollView component while scrolling in action.
+*/
+
 import React from "react";
 import {
   LayoutChangeEvent,
